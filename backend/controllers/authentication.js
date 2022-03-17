@@ -4,6 +4,19 @@ const bcrypt = require('bcrypt')
 
 const { User } = db
 
+router.get('/profile', async (req, res)=>{
+    try{
+        let user = await User.findOne({
+            where: {
+                userID: req.session.userId
+            }
+        })
+        res.json(user)
+    }catch{
+        res.json(null)
+    }
+})
+
 router.post('/', async (req, res)=>{
     let user = await User.findOne({
         where:{
@@ -15,7 +28,8 @@ router.post('/', async (req, res)=>{
             message: 'No work'
         })
     }else{
-        res.json({ user })
+        req.session.userId = user.userId
+        res.json({ user }) 
     }
 })
 
